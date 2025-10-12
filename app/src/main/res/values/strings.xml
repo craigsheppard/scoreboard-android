@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Scoreboard</string>
+    <string name="todays_game">Today\'s Game</string>
+    <string name="swap_sides">Swap Sides</string>
+    <string name="new_game">New Game</string>
+    <string name="go">Go</string>
+    <string name="save_team">Save Team</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="team_name">Team Name</string>
+    <string name="primary_color">Primary Color</string>
+    <string name="secondary_color">Secondary Color</string>
+    <string name="font_color">Font Color</string>
+    <string name="select_home_team">Select Home Team</string>
+    <string name="select_away_team">Select Away Team</string>
+    <string name="new_team">+ New Team</string>
+    <string name="no_saved_teams">No saved teams yet</string>
+    <string name="delete_team">Delete Team</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="discard_changes">Discard Changes</string>
+    <string name="home">Home</string>
+    <string name="away">Away</string>
+</resources>
