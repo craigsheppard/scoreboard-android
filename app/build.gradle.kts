@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
     // Firebase disabled for now - uncomment when you add google-services.json
     // id("com.google.gms.google-services")
 }
@@ -71,6 +73,11 @@ dependencies {
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Firebase - disabled for now, uncomment when you add google-services.json
     // implementation(platform("com.google.firebase:firebase-bom:33.6.0"))

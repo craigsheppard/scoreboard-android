@@ -16,6 +16,9 @@ import com.scoreboard.ui.scoreboard.ScoreboardScreen
 import com.scoreboard.ui.theme.ScoreboardTheme
 import com.scoreboard.viewmodel.ScoreboardViewModel
 
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: ScoreboardViewModel by viewModels()
 

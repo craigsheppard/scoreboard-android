@@ -22,4 +22,7 @@
     <string name="discard_changes">Discard Changes</string>
     <string name="home">Home</string>
     <string name="away">Away</string>
+    <string name="swap_icon">⇅</string>
+    <string name="new_game_dialog_message">Start a new game? This will reset the score.</string>
+    <string name="new_game_dialog_confirm">New Game</string>
 </resources>
