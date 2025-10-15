@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "com.scoreboard"
+    namespace = "com.craigsheppard.scoreboard"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.scoreboard"
+        applicationId = "com.craigsheppard.scoreboard"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
