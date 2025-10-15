@@ -3,13 +3,17 @@ package com.scoreboard.ui.scoreboard
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.scoreboard.data.models.ScoreSide
 import com.scoreboard.viewmodel.ScoreboardViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ScoreboardScreen(viewModel: ScoreboardViewModel) {
-    val config = viewModel.appConfig
+fun ScoreboardScreen(viewModel: ScoreboardViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+    val config = uiState.appConfig
 
     Row(modifier = Modifier.fillMaxSize()) {
         // Home team (left side)

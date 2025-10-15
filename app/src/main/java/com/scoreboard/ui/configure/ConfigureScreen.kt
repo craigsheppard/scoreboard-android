@@ -3,24 +3,22 @@ package com.scoreboard.ui.configure
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.scoreboard.R
-import com.scoreboard.viewmodel.ScoreboardViewModel
+import com.scoreboard.viewmodel.ConfigureViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ConfigureScreen(viewModel: ScoreboardViewModel) {
-    var config by remember { mutableStateOf(viewModel.appConfig) }
+fun ConfigureScreen(viewModel: ConfigureViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+    val config = uiState.appConfig
 
     var showNewGameDialog by remember { mutableStateOf(false) }
     var showGameTypeDialog by remember { mutableStateOf(false) }
-
-    // Update config when viewModel changes
-    LaunchedEffect(viewModel.appConfig) {
-        config = viewModel.appConfig
-    }
 
     Column(
         modifier = Modifier
@@ -52,7 +50,6 @@ fun ConfigureScreen(viewModel: ScoreboardViewModel) {
             viewModel = viewModel,
             onTeamUpdated = { updatedTeam ->
                 viewModel.updateHomeTeam(updatedTeam)
-                config = viewModel.appConfig
             }
         )
 
@@ -60,11 +57,10 @@ fun ConfigureScreen(viewModel: ScoreboardViewModel) {
         TextButton(
             onClick = {
                 viewModel.swapTeams()
-                config = viewModel.appConfig
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text("⇅ " + stringResource(R.string.swap_sides))
+            Text(stringResource(R.string.swap_icon) + " " + stringResource(R.string.swap_sides))
         }
 
         // Away Team Configuration
@@ -75,7 +71,6 @@ fun ConfigureScreen(viewModel: ScoreboardViewModel) {
             viewModel = viewModel,
             onTeamUpdated = { updatedTeam ->
                 viewModel.updateAwayTeam(updatedTeam)
-                config = viewModel.appConfig
             }
         )
 
@@ -106,14 +101,13 @@ fun ConfigureScreen(viewModel: ScoreboardViewModel) {
         AlertDialog(
             onDismissRequest = { showNewGameDialog = false },
             title = { Text(stringResource(R.string.new_game)) },
-            text = { Text("Start a new game? This will reset the score.") },
+            text = { Text(stringResource(R.string.new_game_dialog_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.newGame()
-                    config = viewModel.appConfig
                     showNewGameDialog = false
                 }) {
-                    Text("New Game")
+                    Text(stringResource(R.string.new_game_dialog_confirm))
                 }
             },
             dismissButton = {
@@ -129,10 +123,7 @@ fun ConfigureScreen(viewModel: ScoreboardViewModel) {
         GameTypeSelectionDialog(
             currentGameType = config.currentGameType,
             viewModel = viewModel,
-            onDismiss = {
-                showGameTypeDialog = false
-                config = viewModel.appConfig
-            }
+            onDismiss = { showGameTypeDialog = false }
         )
     }
 }

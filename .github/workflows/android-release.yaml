@@ -1,0 +1,152 @@
+name: Build, Sign, and Release Android AAB
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Get previous release version code from asset
+        id: get-version-code
+        run: |
+          # Fetch all releases with authentication
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases > releases.json
+
+          # Extract the previous release ID
+          PREVIOUS_RELEASE_ID=$(jq -r 'map(select(.draft == false and .prerelease == false)) | .[1].id' releases.json)
+
+          if [ -z "$PREVIOUS_RELEASE_ID" ] || [ "$PREVIOUS_RELEASE_ID" = "null" ]; then
+            echo "1" > androidVersionCode.txt
+          else
+            # Fetch assets for the previous release with authentication
+            curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/$PREVIOUS_RELEASE_ID/assets > assets.json
+
+            # Extract the asset URL for androidVersionCode.txt
+            ASSET_URL=$(jq -r '.[] | select(.name == "androidVersionCode.txt") | .url' assets.json)
+
+            if [ -z "$ASSET_URL" ]; then
+              echo "1" > androidVersionCode.txt
+            else
+              # Download the androidVersionCode.txt asset
+              curl -L -o androidVersionCode.txt -H "Accept: application/octet-stream" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $ASSET_URL
+            fi
+          fi
+
+          PREVIOUS_VERSION_CODE=$(cat androidVersionCode.txt)
+          VERSION_CODE=$((PREVIOUS_VERSION_CODE + 1))
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo $VERSION_CODE > androidVersionCode.txt
+
+      - name: Extract version components
+        id: extract_version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          VERSION_NAME=${TAG_NAME}  # Use the full tag name as the version name
+          VERSION_NAME=${VERSION_NAME#v}  # Remove leading 'v'
+
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+
+      - name: Get short SHA of latest commit
+        id: get_short_sha
+        run: echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Debug version variables
+        run: |
+          echo "TAG_NAME=${{ env.TAG_NAME }}"
+          echo "VERSION_NAME=${{ env.VERSION_NAME }}"
+          echo "VERSION_CODE=${{ env.VERSION_CODE }}"
+          echo "COMMIT=${{ env.COMMIT }}"
+
+      - name: Update app/build.gradle.kts
+        run: |
+          cd app
+          # Update versionName in Kotlin DSL
+          sed -i "s/versionName = \".*\"/versionName = \"${{ env.VERSION_NAME }}\"/" build.gradle.kts
+          # Update versionCode in Kotlin DSL
+          sed -i "s/versionCode = [0-9]*/versionCode = ${{ env.VERSION_CODE }}/" build.gradle.kts
+          echo "Updated build.gradle.kts with versionName $VERSION_NAME and versionCode $VERSION_CODE"
+
+          # Display the updated build.gradle.kts for verification
+          cat build.gradle.kts | grep -E "versionName|versionCode"
+
+      - name: Decode and save keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo $KEYSTORE_BASE64 | base64 --decode > keystore.jks
+
+      - name: Create keystore.properties
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          cat > keystore.properties << EOF
+          storeFile=../keystore.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
+
+      - name: Build Android AAB
+        run: |
+          ./gradlew bundleRelease
+
+      - name: List AABs
+        run: |
+          ls -al app/build/outputs/bundle/release/
+
+      - name: Verify signed AAB
+        run: |
+          jarsigner -verify -verbose -certs app/build/outputs/bundle/release/app-release.aab
+
+      - name: Get the release ID
+        id: get_release
+        run: |
+          RELEASE_ID=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.event.release.tag_name }}" \
+            | jq -r .id)
+          echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
+
+      - name: Upload AAB to GitHub Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets?name=Scoreboard-${{ env.TAG_NAME }}.aab
+          asset_path: app/build/outputs/bundle/release/app-release.aab
+          asset_name: Scoreboard-${{ env.TAG_NAME }}.aab
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload updated versionCode as asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets?name=androidVersionCode.txt
+          asset_path: androidVersionCode.txt
+          asset_name: androidVersionCode.txt
+          asset_content_type: text/plain
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SCOREBOARD_GOOGLE_PLAY_SERVICE_ACCOUNT }}
+          packageName: com.scoreboard
+          releaseName: ${{ env.TAG_NAME }}
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          track: production
