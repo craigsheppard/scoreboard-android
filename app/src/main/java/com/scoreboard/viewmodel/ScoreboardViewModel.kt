@@ -25,13 +25,14 @@ class ScoreboardViewModel @Inject constructor(
     val uiState: StateFlow<ScoreboardUiState> = _uiState.asStateFlow()
 
     init {
-        loadConfiguration()
+        observeConfiguration()
     }
 
-    private fun loadConfiguration() {
+    private fun observeConfiguration() {
         viewModelScope.launch {
-            val appConfig = repository.getAppConfiguration().first()
-            _uiState.value = ScoreboardUiState(appConfig = appConfig)
+            repository.getAppConfiguration().collect { appConfig ->
+                _uiState.value = ScoreboardUiState(appConfig = appConfig)
+            }
         }
     }
 

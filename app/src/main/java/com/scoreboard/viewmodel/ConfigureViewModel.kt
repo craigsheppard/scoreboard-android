@@ -29,13 +29,14 @@ class ConfigureViewModel @Inject constructor(
     val uiState: StateFlow<ConfigureUiState> = _uiState.asStateFlow()
 
     init {
-        loadConfiguration()
+        observeConfiguration()
     }
 
-    private fun loadConfiguration() {
+    private fun observeConfiguration() {
         viewModelScope.launch {
-            val appConfig = repository.getAppConfiguration().first()
-            _uiState.value = ConfigureUiState(appConfig = appConfig)
+            repository.getAppConfiguration().collect { appConfig ->
+                _uiState.value = ConfigureUiState(appConfig = appConfig)
+            }
         }
     }
 

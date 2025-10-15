@@ -1,11 +1,14 @@
 package com.scoreboard.ui.configure
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.craigsheppard.scoreboard.R
@@ -14,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun ConfigureScreen(viewModel: ConfigureViewModel = hiltViewModel()) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val config = uiState.appConfig
 
@@ -86,7 +90,9 @@ fun ConfigureScreen(viewModel: ConfigureViewModel = hiltViewModel()) {
 
         // Go button
         Button(
-            onClick = { /* Force landscape - handled by system */ },
+            onClick = {
+                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary
