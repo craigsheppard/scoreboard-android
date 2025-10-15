@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.core.content.res.ResourcesCompat
-import com.scoreboard.R
+import com.craigsheppard.scoreboard.R
 
 @Composable
 fun OutlinedText(

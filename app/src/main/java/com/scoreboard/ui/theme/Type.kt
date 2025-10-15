@@ -6,7 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.scoreboard.R
+import com.craigsheppard.scoreboard.R
 
 val JerseyFont = FontFamily(
     Font(R.font.jersey_m54, FontWeight.Normal)

@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.scoreboard.R
+import com.craigsheppard.scoreboard.R
 import com.scoreboard.data.models.GameType
 import com.scoreboard.data.models.SavedTeam
 import com.scoreboard.data.models.TeamConfiguration
