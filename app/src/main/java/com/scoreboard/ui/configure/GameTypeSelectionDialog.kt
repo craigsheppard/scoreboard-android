@@ -13,12 +13,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.scoreboard.R
 import com.scoreboard.data.models.GameType
-import com.scoreboard.viewmodel.ScoreboardViewModel
+import com.scoreboard.viewmodel.ConfigureViewModel
 
 @Composable
 fun GameTypeSelectionDialog(
     currentGameType: GameType,
-    viewModel: ScoreboardViewModel,
+    viewModel: ConfigureViewModel,
     onDismiss: () -> Unit
 ) {
     var selectedGameType by remember { mutableStateOf(currentGameType) }

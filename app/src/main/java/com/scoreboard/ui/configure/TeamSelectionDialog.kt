@@ -21,7 +21,7 @@ import com.scoreboard.R
 import com.scoreboard.data.models.GameType
 import com.scoreboard.data.models.SavedTeam
 import com.scoreboard.data.models.TeamConfiguration
-import com.scoreboard.viewmodel.ScoreboardViewModel
+import com.scoreboard.viewmodel.ConfigureViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +29,7 @@ fun TeamSelectionDialog(
     team: TeamConfiguration,
     isHomeTeam: Boolean,
     gameType: GameType,
-    viewModel: ScoreboardViewModel,
+    viewModel: ConfigureViewModel,
     onDismiss: () -> Unit,
     onTeamSelected: (TeamConfiguration) -> Unit
 ) {

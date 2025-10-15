@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.scoreboard.data.models.ScoreSide
+import com.scoreboard.viewmodel.ScoreboardViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable

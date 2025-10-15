@@ -1,22 +1,21 @@
 package com.scoreboard.viewmodel
 
-import android.app.Application
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.scoreboard.data.models.AppConfiguration
+import com.scoreboard.data.models.GameType
+import com.scoreboard.data.models.SavedTeam
+import com.scoreboard.data.models.TeamConfiguration
+import com.scoreboard.data.models.toArgb
 import com.scoreboard.data.repository.ScoreboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import com.scoreboard.data.models.TeamConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-@HiltViewModel
 data class ConfigureUiState(
     val appConfig: AppConfiguration = AppConfiguration()
 )
@@ -77,9 +76,9 @@ class ConfigureViewModel @Inject constructor(
     fun saveTeam(team: TeamConfiguration) {
         val newSavedTeam = SavedTeam(
             name = team.teamName,
-            primaryColor = team.primaryColor.value.toLong(),
-            secondaryColor = team.secondaryColor.value.toLong(),
-            fontColor = team.fontColor.value.toLong(),
+            primaryColor = team.primaryColor.toArgb(),
+            secondaryColor = team.secondaryColor.toArgb(),
+            fontColor = team.fontColor.toArgb(),
             gameType = uiState.value.appConfig.currentGameType
         )
         val updatedTeams = uiState.value.appConfig.savedTeams.toMutableList().apply { add(newSavedTeam) }

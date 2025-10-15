@@ -14,14 +14,14 @@ import androidx.compose.ui.unit.dp
 import com.scoreboard.R
 import com.scoreboard.data.models.GameType
 import com.scoreboard.data.models.TeamConfiguration
-import com.scoreboard.viewmodel.ScoreboardViewModel
+import com.scoreboard.viewmodel.ConfigureViewModel
 
 @Composable
 fun ConfigureTeamComponent(
     team: TeamConfiguration,
     isHomeTeam: Boolean,
     gameType: GameType,
-    viewModel: ScoreboardViewModel,
+    viewModel: ConfigureViewModel,
     onTeamUpdated: (TeamConfiguration) -> Unit,
     modifier: Modifier = Modifier
 ) {
