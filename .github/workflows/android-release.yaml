@@ -113,34 +113,13 @@ jobs:
         run: |
           jarsigner -verify -verbose -certs app/build/outputs/bundle/release/app-release.aab
 
-      - name: Get the release ID
-        id: get_release
-        run: |
-          RELEASE_ID=$(curl -s \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.event.release.tag_name }}" \
-            | jq -r .id)
-          echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
-
       - name: Upload AAB to GitHub Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets?name=Scoreboard-${{ env.TAG_NAME }}.aab
-          asset_path: app/build/outputs/bundle/release/app-release.aab
-          asset_name: Scoreboard-${{ env.TAG_NAME }}.aab
-          asset_content_type: application/octet-stream
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload updated versionCode as asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ env.RELEASE_ID }}/assets?name=androidVersionCode.txt
-          asset_path: androidVersionCode.txt
-          asset_name: androidVersionCode.txt
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ env.TAG_NAME }} \
+            app/build/outputs/bundle/release/app-release.aab#Scoreboard-${{ env.TAG_NAME }}.aab \
+            androidVersionCode.txt
 
       - name: Deploy to Google Play
         uses: r0adkll/upload-google-play@v1
