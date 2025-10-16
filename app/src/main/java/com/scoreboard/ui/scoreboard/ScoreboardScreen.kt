@@ -20,11 +20,12 @@ fun ScoreboardScreen(viewModel: ScoreboardViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val config = uiState.appConfig
 
-    // Unlock rotation when scoreboard is visible
+    // Keep landscape locked - user must physically rotate to landscape and back to portrait
+    // This matches iOS behavior where orientation is "sticky"
     DisposableEffect(Unit) {
-        (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         onDispose {
-            // Keep sensor orientation on dispose
+            // Don't change orientation on dispose
         }
     }
 
