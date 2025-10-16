@@ -228,34 +228,100 @@ fun ColorPickerDialog(
         title = { Text("Select Color") },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Predefined colors
-                val predefinedColors = listOf(
-                    Color.Red, Color.Blue, Color.Green, Color.Yellow,
-                    Color.Cyan, Color.Magenta, Color.Black, Color.White,
-                    Color(0xFFFF9800), // Orange
-                    Color(0xFF9C27B0), // Purple
-                    Color(0xFF795548), // Brown
-                    Color(0xFF607D8B)  // Blue Grey
+                // Extended color palette organized by hue
+                val colorPalette = listOf(
+                    // Reds
+                    listOf(
+                        Color(0xFFFFEBEE), Color(0xFFFFCDD2), Color(0xFFEF9A9A), Color(0xFFE57373),
+                        Color(0xFFEF5350), Color(0xFFF44336), Color(0xFFE53935), Color(0xFFD32F2F),
+                        Color(0xFFC62828), Color(0xFFB71C1C)
+                    ),
+                    // Pinks
+                    listOf(
+                        Color(0xFFFCE4EC), Color(0xFFF8BBD0), Color(0xFFF48FB1), Color(0xFFF06292),
+                        Color(0xFFEC407A), Color(0xFFE91E63), Color(0xFFD81B60), Color(0xFFC2185B),
+                        Color(0xFFAD1457), Color(0xFF880E4F)
+                    ),
+                    // Purples
+                    listOf(
+                        Color(0xFFF3E5F5), Color(0xFFE1BEE7), Color(0xFFCE93D8), Color(0xFFBA68C8),
+                        Color(0xFFAB47BC), Color(0xFF9C27B0), Color(0xFF8E24AA), Color(0xFF7B1FA2),
+                        Color(0xFF6A1B9A), Color(0xFF4A148C)
+                    ),
+                    // Blues
+                    listOf(
+                        Color(0xFFE3F2FD), Color(0xFFBBDEFB), Color(0xFF90CAF9), Color(0xFF64B5F6),
+                        Color(0xFF42A5F5), Color(0xFF2196F3), Color(0xFF1E88E5), Color(0xFF1976D2),
+                        Color(0xFF1565C0), Color(0xFF0D47A1)
+                    ),
+                    // Cyans
+                    listOf(
+                        Color(0xFFE0F7FA), Color(0xFFB2EBF2), Color(0xFF80DEEA), Color(0xFF4DD0E1),
+                        Color(0xFF26C6DA), Color(0xFF00BCD4), Color(0xFF00ACC1), Color(0xFF0097A7),
+                        Color(0xFF00838F), Color(0xFF006064)
+                    ),
+                    // Greens
+                    listOf(
+                        Color(0xFFE8F5E9), Color(0xFFC8E6C9), Color(0xFFA5D6A7), Color(0xFF81C784),
+                        Color(0xFF66BB6A), Color(0xFF4CAF50), Color(0xFF43A047), Color(0xFF388E3C),
+                        Color(0xFF2E7D32), Color(0xFF1B5E20)
+                    ),
+                    // Yellows/Oranges
+                    listOf(
+                        Color(0xFFFFFDE7), Color(0xFFFFF9C4), Color(0xFFFFF59D), Color(0xFFFFF176),
+                        Color(0xFFFFEE58), Color(0xFFFFEB3B), Color(0xFFFDD835), Color(0xFFFBC02D),
+                        Color(0xFFF9A825), Color(0xFFF57F17)
+                    ),
+                    // Oranges
+                    listOf(
+                        Color(0xFFFFF3E0), Color(0xFFFFE0B2), Color(0xFFFFCC80), Color(0xFFFFB74D),
+                        Color(0xFFFFA726), Color(0xFFFF9800), Color(0xFFFB8C00), Color(0xFFF57C00),
+                        Color(0xFFEF6C00), Color(0xFFE65100)
+                    ),
+                    // Browns/Greys
+                    listOf(
+                        Color(0xFFEFEBE9), Color(0xFFD7CCC8), Color(0xFFBCAAA4), Color(0xFFA1887F),
+                        Color(0xFF8D6E63), Color(0xFF795548), Color(0xFF6D4C41), Color(0xFF5D4037),
+                        Color(0xFF4E342E), Color(0xFF3E2723)
+                    ),
+                    // Greys/Black/White
+                    listOf(
+                        Color.White, Color(0xFFF5F5F5), Color(0xFFEEEEEE), Color(0xFFE0E0E0),
+                        Color(0xFFBDBDBD), Color(0xFF9E9E9E), Color(0xFF757575), Color(0xFF616161),
+                        Color(0xFF424242), Color.Black
+                    )
                 )
 
-                Text("Quick Colors", style = MaterialTheme.typography.labelMedium)
+                Text("Color Palette", style = MaterialTheme.typography.labelMedium)
 
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    predefinedColors.chunked(4).forEach { rowColors ->
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    colorPalette.forEach { rowColors ->
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             rowColors.forEach { color ->
                                 Button(
                                     onClick = { selectedColor = color },
                                     colors = ButtonDefaults.buttonColors(containerColor = color),
-                                    modifier = Modifier.size(50.dp),
-                                    contentPadding = PaddingValues(0.dp)
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(32.dp),
+                                    contentPadding = PaddingValues(0.dp),
+                                    shape = RoundedCornerShape(4.dp)
                                 ) {
                                     if (selectedColor == color) {
-                                        Text("✓", color = Color.White)
+                                        Text(
+                                            "✓",
+                                            color = if (color.luminance() > 0.5f) Color.Black else Color.White,
+                                            style = MaterialTheme.typography.labelSmall
+                                        )
                                     }
                                 }
                             }

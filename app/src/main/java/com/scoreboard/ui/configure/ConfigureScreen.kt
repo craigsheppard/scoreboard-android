@@ -91,7 +91,7 @@ fun ConfigureScreen(viewModel: ConfigureViewModel = hiltViewModel()) {
         // Go button
         Button(
             onClick = {
-                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
