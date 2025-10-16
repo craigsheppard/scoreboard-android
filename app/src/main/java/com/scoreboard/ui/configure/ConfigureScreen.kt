@@ -93,8 +93,7 @@ fun ConfigureScreen(
         // Go button
         Button(
             onClick = {
-                // Use LANDSCAPE (not SENSOR_LANDSCAPE) to lock orientation
-                // This prevents immediate rotation back while staying sticky
+                // Rotate to landscape - ScoreboardScreen will lock it
                 (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             },
             modifier = Modifier.fillMaxWidth(),
