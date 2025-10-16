@@ -33,17 +33,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ScoreboardApp() {
-    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     if (isLandscape) {
         // Landscape: Show scoreboard
-        // Allow sensor rotation so user can rotate back to portrait
-        DisposableEffect(Unit) {
-            (context as? MainActivity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-            onDispose { }
-        }
+        // Stay locked in landscape - don't unlock rotation
         ScoreboardScreen()
     } else {
         // Portrait: Show configuration
