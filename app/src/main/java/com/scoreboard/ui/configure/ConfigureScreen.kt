@@ -16,7 +16,9 @@ import com.scoreboard.viewmodel.ConfigureViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ConfigureScreen(viewModel: ConfigureViewModel = hiltViewModel()) {
+fun ConfigureScreen(
+    viewModel: ConfigureViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val config = uiState.appConfig
@@ -91,7 +93,9 @@ fun ConfigureScreen(viewModel: ConfigureViewModel = hiltViewModel()) {
         // Go button
         Button(
             onClick = {
-                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                // Use LANDSCAPE (not SENSOR_LANDSCAPE) to lock orientation
+                // This prevents immediate rotation back while staying sticky
+                (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(

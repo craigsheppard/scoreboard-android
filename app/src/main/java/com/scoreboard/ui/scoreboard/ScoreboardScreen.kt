@@ -15,19 +15,11 @@ import com.scoreboard.viewmodel.ScoreboardViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ScoreboardScreen(viewModel: ScoreboardViewModel = hiltViewModel()) {
-    val context = LocalContext.current
+fun ScoreboardScreen(
+    viewModel: ScoreboardViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsState()
     val config = uiState.appConfig
-
-    // Keep landscape locked - user must physically rotate to landscape and back to portrait
-    // This matches iOS behavior where orientation is "sticky"
-    DisposableEffect(Unit) {
-        (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        onDispose {
-            // Don't change orientation on dispose
-        }
-    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         // Home team (left side)
